@@ -43,6 +43,13 @@ class _EntryDetailsScreenState extends State<EntryDetailsScreen> {
     });
   }
 
+  /// Truncates a string after [wordLimit] words and adds an ellipsis if needed.
+  String truncateWords(String input, int wordLimit) {
+    List<String> words = input.split(' ');
+    if (words.length <= wordLimit) return input;
+    return words.take(wordLimit).join(' ') + '...';
+  }
+
   @override
   Widget build(BuildContext context) {
     final bool isFull = bookedCount >= widget.event.slotCount;
@@ -150,9 +157,7 @@ class _EntryDetailsScreenState extends State<EntryDetailsScreen> {
 
                   const SizedBox(height: 16),
 
-                  const SizedBox(height: 16),
-
-// 6) Booked participants list
+                  // 6) Booked participants list
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: EventParticipants(
@@ -176,7 +181,7 @@ class _EntryDetailsScreenState extends State<EntryDetailsScreen> {
             Expanded(
               child: ElevatedButton(
                 onPressed: () {
-             
+                  // Add your functionality for MY ENTRIES button here
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue.shade800,
@@ -226,7 +231,8 @@ class _EntryDetailsScreenState extends State<EntryDetailsScreen> {
     );
   }
 
-  // Builds a small card widget for each label/value pair
+  /// Builds a small card widget for each label/value pair.
+  /// For the "Type", "Version", and "Map" labels, the value is truncated.
   Widget _buildSmallCard(
     String label,
     String value, {
@@ -234,6 +240,12 @@ class _EntryDetailsScreenState extends State<EntryDetailsScreen> {
     Color iconColor = Colors.black54,
     bool fullWidth = false,
   }) {
+    // Apply truncation for "Type", "Version", and "Map"
+    String displayValue = value;
+    if (label == "Type" || label == "Version" || label == "Map") {
+      displayValue = truncateWords(value, 10);
+    }
+
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -246,27 +258,33 @@ class _EntryDetailsScreenState extends State<EntryDetailsScreen> {
               Icon(icon, color: iconColor, size: 18),
               const SizedBox(width: 6),
             ],
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    color: Colors.grey,
-                    fontWeight: FontWeight.bold,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: Colors.grey,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  value,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
+                  const SizedBox(height: 4),
+                  Text(
+                    displayValue,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black87,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),
@@ -274,7 +292,7 @@ class _EntryDetailsScreenState extends State<EntryDetailsScreen> {
     );
   }
 
-  // Builds a styled card for the HTML-based Rules & Policies
+  /// Builds a styled card for the HTML-based Rules & Policies.
   Widget _buildRulesCard(String htmlContent) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -313,6 +331,28 @@ class _EntryDetailsScreenState extends State<EntryDetailsScreen> {
                     color: Colors.black87,
                     fontSize: FontSize(14.0),
                     lineHeight: LineHeight(1.4),
+                  ),
+                  "h2": Style(
+                    color: const Color(0xFF001F4D),
+                    fontSize: FontSize(18),
+                    fontWeight: FontWeight.bold,
+                    margin: Margins.only(top: 16.0, bottom: 8.0),
+                  ),
+                  "ol": Style(
+                    backgroundColor: Colors.grey.shade200,
+                    color: const Color(0xFF001F4D),
+                    margin: Margins.only(left: 20.0),
+                  ),
+                  "ul": Style(
+                    backgroundColor: Colors.grey.shade200,
+                    // borderRadius: BorderRadius.circular(5)
+                    color: const Color(0xFF001F4D),
+                    margin: Margins.only(left: 20.0),
+                  ),
+                  "li": Style(
+                    backgroundColor: Colors.grey.shade200,
+                    color: Colors.black87, // Text color in the box
+                    margin: Margins.only(bottom: 6.0),
                   ),
                 },
               ),

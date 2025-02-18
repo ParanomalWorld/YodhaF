@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-String uri = 'https://8a35-205-254-174-252.ngrok-free.app';
+String uri = 'https://yodhah.onrender.com';
 
 class GlobalVariables {
    // COLORS

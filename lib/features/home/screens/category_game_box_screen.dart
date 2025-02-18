@@ -67,6 +67,12 @@ class _CategoryGameBoxScreenState extends State<CategoryGameBoxScreen> {
     Navigator.pushNamed(context, SlotScreen.routeName, arguments: event.id);
   }
 
+  String truncateWords(String input, int wordLimit) {
+    List<String> words = input.split(' ');
+    if (words.length <= wordLimit) return input;
+    return words.take(wordLimit).join(' ') + '...';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -130,48 +136,50 @@ class _CategoryGameBoxScreenState extends State<CategoryGameBoxScreen> {
                               ),
                             ),
                             const SizedBox(height: 12),
+                            // Updated row with constrained text:
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Row(
-                                  children: [
-                                    CircleAvatar(
-                                      backgroundImage:
-                                          AssetImage('assets/images/logo.jpg'),
-                                      radius: 20,
-                                    ),
-                                    const SizedBox(width: 12),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
+                                CircleAvatar(
+                                  backgroundImage:
+                                      AssetImage('assets/images/logo.jpg'),
+                                  radius: 20,
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        truncateWords(
                                           '${event.eventName} | ${event.eventType} | ${event.gameMode}'
                                               .toUpperCase(),
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                            color: Color(0xFF505050),
-                                          ),
+                                          10, // Number of words to display before adding ellipsis
                                         ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          'Time: ${DateFormat('yyyy-MM-dd').format(DateTime.parse(event.eventDate))} at ${formatTime12Hour(event.eventTime)}',
-                                          style: const TextStyle(
-                                            fontSize: 13,
-                                            color:
-                                                Color.fromARGB(255, 99, 96, 96),
-                                          ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF505050),
                                         ),
-                                      ],
-                                    ),
-                                  ],
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        'Time: ${DateFormat('yyyy-MM-dd').format(DateTime.parse(event.eventDate))} at ${formatTime12Hour(event.eventTime)}',
+                                        style: const TextStyle(
+                                          fontSize: 13,
+                                          color: Color.fromARGB(255, 99, 96, 96),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
                             const SizedBox(height: 16),
 
-// Upper Row
+                            // Upper Row
                             Row(
                               children: [
                                 Expanded(
@@ -191,7 +199,7 @@ class _CategoryGameBoxScreenState extends State<CategoryGameBoxScreen> {
 
                             const SizedBox(height: 10),
 
-// Lower Row
+                            // Lower Row
                             Row(
                               children: [
                                 Expanded(
@@ -210,7 +218,7 @@ class _CategoryGameBoxScreenState extends State<CategoryGameBoxScreen> {
 
                             const SizedBox(height: 14),
 
-// Progress Bar and Button
+                            // Progress Bar and Button
                             Padding(
                               padding: const EdgeInsets.only(
                                   left: 19, right: 15, top: 11, bottom: 8),
@@ -224,42 +232,40 @@ class _CategoryGameBoxScreenState extends State<CategoryGameBoxScreen> {
                                       filledSpots: bookedCount,
                                     ),
                                   ),
-                                  const SizedBox(
-                                      width:
-                                          30), // Add small gap between progress bar and button
+                                  const SizedBox(width: 30),
                                   SizedBox(
-                                    width:
-                                        92, // Increase button width but keep it slim
+                                    width: 92,
                                     height: 32,
                                     child: ElevatedButton(
                                       onPressed: isFull
                                           ? null
-                                          : () => navigateToSlotBookScreen(
-                                              context, event),
+                                          : () =>
+                                              navigateToSlotBookScreen(
+                                                  context, event),
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: isFull
                                             ? Colors.grey
-                                            : const Color(
-                                                0xFF215123), // Use hex color
+                                            : const Color(0xFF215123),
                                         shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                                9)), // Slightly rounded
+                                          borderRadius:
+                                              BorderRadius.circular(9),
+                                        ),
                                         padding: const EdgeInsets.symmetric(
                                             vertical: 1),
                                       ),
                                       child: Text(
                                         isFull ? "MATCH FULL" : "JOIN",
                                         style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold),
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-
                             const SizedBox(height: 2),
                           ],
                         ),
@@ -274,7 +280,6 @@ class _CategoryGameBoxScreenState extends State<CategoryGameBoxScreen> {
 
   Widget buildUpperColumn(String label, String value) {
     return Padding(
-      // Optional: You can adjust or remove this padding if needed.
       padding: const EdgeInsets.symmetric(horizontal: 22),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -283,19 +288,25 @@ class _CategoryGameBoxScreenState extends State<CategoryGameBoxScreen> {
           Text(
             label,
             style: const TextStyle(
-                fontSize: 15, fontWeight: FontWeight.bold, color: Colors.grey),
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey,
+            ),
           ),
           const SizedBox(height: 5),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.monetization_on, size: 18, color: Colors.orange),
+              const Icon(Icons.monetization_on,
+                  size: 18, color: Colors.orange),
               const SizedBox(width: 6),
               Text(
                 value,
-                style:
-                    const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ],
           ),
@@ -306,7 +317,6 @@ class _CategoryGameBoxScreenState extends State<CategoryGameBoxScreen> {
 
   Widget buildLowerColumn(String label, String value) {
     return Padding(
-      // Optional: You can adjust or remove this padding if needed.
       padding: const EdgeInsets.only(left: 32, right: 32, top: 5),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -315,12 +325,18 @@ class _CategoryGameBoxScreenState extends State<CategoryGameBoxScreen> {
           Text(
             label,
             style: const TextStyle(
-                fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey),
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey,
+            ),
           ),
           const SizedBox(height: 5),
           Text(
             value,
-            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ],
       ),
